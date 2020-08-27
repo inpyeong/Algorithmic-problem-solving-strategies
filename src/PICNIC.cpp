@@ -15,6 +15,7 @@ int bruteForce() {
     }
   }
 
+  // Base case
   if (now == -1) return 1;
   
   int ret = 0;
@@ -29,11 +30,9 @@ int bruteForce() {
 }
 
 void solve() {
-  // Initiate
   memset(isFriend, false, sizeof(isFriend));
   memset(hasTeam, false, sizeof(hasTeam));
 
-  // Get test case 
   scanf("%d %d", &numOfPeople, &numOfFriends);
   for (int i = 0; i < numOfFriends; i++) {
     int x, y;
