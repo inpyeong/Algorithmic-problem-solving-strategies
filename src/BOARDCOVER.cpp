@@ -49,7 +49,6 @@ int cover(vector <vector <int>> &board) {
 }
 
 void solve() {
-  // fill(board.begin(), board.end(), 0);
   height = width = 0;
 
   scanf("%d %d", &height, &width);
