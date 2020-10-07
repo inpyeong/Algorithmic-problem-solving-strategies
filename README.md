@@ -1,1 +1,1 @@
-# Algorithmic_problem_solving_strategies
+# Algorithmic-problem-solving-strategies
