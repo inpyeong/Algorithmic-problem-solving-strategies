@@ -1,66 +1,61 @@
 #include <iostream>
 #include <vector>
-#include <string>
+#include <map>
+#include <algorithm>
 
 using namespace std;
 
-const int MAX_M = 50;
-
 int n, m;
-int answer;
-bool used[50];
+// canEat[i]: i번 친구가 먹을 수 있는 음식의 집합
+// eaters[i]: i번 음식을 먹을 수 있는 친구들의 집합
+vector<int> canEat[50], eaters[50];
+int best;
 
-bool isGood(vector<pair<string, bool> >& friends, const vector<vector<string> >& foods) {
-  for(int i = 0; i < m; ++i) {
-    if(used[i]) {
-      for(int j = 0; j < foods[i].size(); ++j) {
-        for(int k = 0; k < friends.size(); ++k)
-          if(friends[k].first == foods[i][j]) friends[k].second = true;
-      }
-    }
-  }
-  bool ret = true;
-  for(int i = 0; i < friends.size(); ++i) 
-    if(!friends[i].second) ret = false;
-  return ret;
+void clear() {
+  for(int i = 0; i < n; ++i)
+    canEat[i].clear();
+  for(int i = 0; i < m; ++i)
+    eaters[i].clear();
 }
 
-void search(vector<pair<string, bool> >& friends, const vector<vector<string> >& foods, int cnt) {
-  // 기저사례
-  if(cnt > foods.size()) return;
+void search(vector<int>& edible, int chosen) {
+  // 가지치기
+  if(chosen >= best) return;
+  // 아직 먹을 음식이 없는 첫 번째 친구
+  int first = 0;
+  while(first < n && edible[first] > 0) ++first;
+  if(first == n) { best = chosen; return; }
 
-  if(isGood(friends, foods)) {
-    answer = min(answer, cnt);
-    return;
-  }
-  
-  for(int i = 0; i < foods.size(); ++i) {
-    if(!used[i]) {
-      used[i] = true;
-      search(friends, foods, ++cnt);
-      used[i] = false;
-    }
+  for(int i = 0; i < canEat[first].size(); ++i) {
+    int food = canEat[first][i];
+    for(int j = 0; j < eaters[food].size(); ++j)
+      edible[eaters[food][j]]++;
+    search(edible, chosen+1);
+    for(int j = 0; j < eaters[food].size(); ++j)
+      edible[eaters[food][j]]--;
   }
 }
 
 void solve() {
   cin >> n >> m;
-  answer = MAX_M;
-  for(int i = 0; i < m; ++i)
-    used[i] = false;
-  vector<pair<string, bool> > friends(n, make_pair("", false));
-  vector<vector<string> > foods(m);
-  for(int i = 0; i < n; ++i)
-    cin >> friends[i].first;
+  map<string, int> index;
+  for(int i = 0; i < n; ++i) {
+    string name; cin >> name;
+    index[name] = i;
+  }
   for(int i = 0; i < m; ++i) {
-    int numOfFriends; cin >> numOfFriends;
-    for(int i = 0; i < numOfFriends; ++i) {
+    int numOfPeople; cin >> numOfPeople;
+    for(int j = 0; j < numOfPeople; ++j) {
       string name; cin >> name;
-      foods[i].push_back(name);
+      eaters[i].push_back(index[name]);
+      canEat[index[name]].push_back(i);
     }
   }
-  search(friends, foods, 0);
-  cout << answer << "\n";
+  vector<int> edible(n, 0);
+  best = m;
+  search(edible, 0);
+  cout << best << "\n";
+  clear();
 }
 
 int main() {
