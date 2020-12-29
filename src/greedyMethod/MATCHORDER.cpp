@@ -14,7 +14,7 @@ int order(const vector<int>& russian, const vector<int> korean) {
     if(*ratings.rbegin() < russian[rus])
       ratings.erase(ratings.begin());
     else {
-      ratings.lower_bound(russian[rus]);
+      ratings.erase(ratings.lower_bound(russian[rus]));
       wins++;
     }
   }
