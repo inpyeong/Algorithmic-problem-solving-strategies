@@ -5,11 +5,6 @@ using namespace std;
 
 int N, K;
 
-struct ListNode {
-    int element;
-    ListNode *prev, *next;
-};
-
 void solve() {
     cin >> N >> K;
     list<int> survivors;
